@@ -8,41 +8,61 @@
     <link rel="stylesheet" href="normalize.css" />
   </head>
   <body>
-    <main class="container">
-      <h1>My Library</h1>
-      <form action="">
-        <div class="field-wrapper">
-          <input type="text" id="title" name="title" placeholder="Title" />
+    <header>
+      <div class="container">
+        <h1 class="logo">My Library</h1>
+        <div class="button-group">
+          <button id="openModal" type="button" class="btn btn-secondary">
+            Add book
+          </button>
+          <button type="button" class="btn btn-primary">Login</button>
         </div>
-        <div class="field-wrapper">
-          <input type="text" id="author" name="author" placeholder="Author" />
-        </div>
-        <div class="field-wrapper">
-          <input type="number" id="pages" name="pages" placeholder="Pages" />
-        </div>
-        <div class="field-wrapper">
-          <select id="read" name="read">
-            <option value="read">Read</option>
-            <option value="not-read">Not read</option>
-          </select>
-        </div>
-        <input class="btn-primary" type="submit" value="Add book" />
-      </form>
-      <div class="book-grid">
-        <template id="book-card-template">
-          <div class="card">
-            <div class="card-header">
-              <p class="book-title"></p>
-            </div>
-            <div class="card-body">
-              <p><strong>Author:</strong> <span class="book-author"></span></p>
-              <p><strong>Pages:</strong> <span class="book-pages"></span></p>
-              <p><strong>Read:</strong> <span class="book-read"></span></p>
-              <button class="btn-secondary">Remove</button>
-            </div>
-          </div>
-        </template>
       </div>
+    </header>
+    <main class="container">
+      <dialog>
+        <form action="">
+          <div class="field-wrapper">
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="Title"
+              required
+            />
+          </div>
+          <div class="field-wrapper">
+            <input
+              type="text"
+              id="author"
+              name="author"
+              placeholder="Author"
+              required
+            />
+          </div>
+          <div class="field-wrapper">
+            <input
+              type="number"
+              min="1"
+              id="pages"
+              name="pages"
+              placeholder="Pages"
+              required
+            />
+          </div>
+          <div class="field-wrapper">
+            <select id="read" name="read">
+              <option value="read">Read</option>
+              <option value="not-read">Not read</option>
+            </select>
+          </div>
+          <input class="btn btn-primary" type="submit" value="Add book" />
+        </form>
+        <button id="closeModal" class="btn btn-secondary" autofocus>
+          Cancel
+        </button>
+      </dialog>
+      <div class="book-grid"></div>
     </main>
     <script src="script.js"></script>
   </body>

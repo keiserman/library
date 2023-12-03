@@ -1,43 +1,17 @@
 const BOOK_GRID = document.querySelector(".book-grid");
+const BOOK_FORM = document.querySelector("form");
+const myLibrary = [];
 
-const myLibrary = [
-  {
-    title: "Harry Potter",
-    author: "J. K. Rowling",
-    pages: "223",
-    read: "Yes",
-  },
-  {
-    title: "The Hobbit",
-    author: "J. R. R. Tolkien",
-    pages: "310",
-    read: "Yes",
-  },
-  {
-    title: "The Name of the Wind",
-    author: "Patrick Rothfuss",
-    pages: "662",
-    read: "Yes",
-  },
-  {
-    title: "A Game of Thrones",
-    author: "George R. R. Martin",
-    pages: "694",
-    read: "No",
-  },
-];
+const dialog = document.querySelector("dialog");
+const showButton = document.querySelector("#openModal");
+const closeButton = document.querySelector("#closeModal");
 
-const template = document.getElementById("book-card-template").content;
+showButton.addEventListener("click", () => {
+  dialog.showModal();
+});
 
-myLibrary.forEach((book) => {
-  const bookCard = document.importNode(template, true);
-
-  bookCard.querySelector(".book-title").textContent = book.title;
-  bookCard.querySelector(".book-author").textContent = book.author;
-  bookCard.querySelector(".book-pages").textContent = book.pages;
-  bookCard.querySelector(".book-read").textContent = book.read;
-
-  document.querySelector(".book-grid").appendChild(bookCard);
+closeButton.addEventListener("click", () => {
+  dialog.close();
 });
 
 function Book(title, author, pages, read) {
@@ -47,11 +21,48 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
-function addBookToLibrary() {
-  let title = prompt("What is the book title?");
-  let author = prompt("Who is the author?");
-  let pages = prompt("How many pages is it?");
-  let read = prompt("Did you read the book?");
+function updateLibrary(library) {
+  resetGrid();
+  library.forEach((book) => {
+    const bookCard = document.createElement("div");
+    bookCard.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          <p class="book-title">${book.title}</p>
+        </div>
+        <div class="card-body">
+          <p><strong>Author:</strong> <span class="book-author">${book.author}</span></p>
+          <p><strong>Pages:</strong> <span class="book-pages">${book.pages}</span></p>
+          <p><strong>Read:</strong> <span class="book-read">${book.read}</span></p>
+          <button class="btn btn-secondary">Remove</button>
+        </div>
+      </div>
+    `;
+    BOOK_GRID.appendChild(bookCard);
+  });
+}
+
+function resetGrid() {
+  BOOK_GRID.innerHTML = "";
+}
+
+function addBook(title, author, pages, read) {
   let book = new Book(title, author, pages, read);
   myLibrary.push(book);
 }
+
+function removeBook() {}
+
+BOOK_FORM.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(BOOK_FORM);
+  const title = formData.get("title");
+  const author = formData.get("author");
+  const pages = formData.get("pages");
+  const read = formData.get("read");
+
+  addBook(title, author, pages, read);
+  updateLibrary(myLibrary);
+  BOOK_FORM.reset();
+});
