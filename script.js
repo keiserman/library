@@ -1,21 +1,21 @@
-const BOOK_GRID = document.querySelector(".book-grid");
-const BOOK_FORM = document.querySelector("form");
-const MODAL = document.querySelector("dialog");
-const OPEN_BUTTON = document.querySelector("#openModal");
-const CLOSE_BUTTON = document.querySelector("#closeModal");
+const bookGrid = document.querySelector(".book-grid");
+const bookForm = document.querySelector("form");
+const modal = document.querySelector("dialog");
+const openButton = document.querySelector("#openModal");
+const closeButton = document.querySelector("#closeModal");
 
 const myLibrary = [
   {
     title: "Harry Potter",
     author: "J.K. Rowling",
     pages: 234,
-    read: "yes",
+    read: true,
   },
   {
     title: "The Hobbit",
     author: "J.R.R. Tolkien",
     pages: 320,
-    read: "yes",
+    read: false,
   },
 ];
 
@@ -26,42 +26,75 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
-OPEN_BUTTON.addEventListener("click", () => {
-  MODAL.showModal();
+openButton.addEventListener("click", () => {
+  modal.showModal();
 });
 
-CLOSE_BUTTON.addEventListener("click", () => {
-  MODAL.close();
+closeButton.addEventListener("click", () => {
+  modal.close();
 });
+
+function createElementWithClass(tag, className) {
+  let element = document.createElement(tag);
+  element.className = className;
+  return element;
+}
 
 function updateLibrary(library) {
   resetGrid();
   library.forEach((book, index) => {
-    const bookCard = document.createElement("div");
-    bookCard.innerHTML = `
-      <div class="card" data-id="${index}">
-        <div class="card-header">
-          <p class="book-title">${book.title}</p>
-        </div>
-        <div class="card-body">
-          <p><strong>Author:</strong> <span class="book-author">${book.author}</span></p>
-          <p><strong>Pages:</strong> <span class="book-pages">${book.pages}</span></p>
-          <p><strong>Read:</strong> <span class="book-read">${book.read}</span></p>
-          <button id="removeBook" class="btn btn-secondary">Remove</button>
-        </div>
-      </div>
-    `;
-    bookCard.addEventListener("click", (event) => {
-      if (event.target.matches("#removeBook")) {
-        removeBook(index, library);
-      }
+    const card = createElementWithClass("div", "card");
+    card.dataset.id = index;
+    bookGrid.appendChild(card);
+
+    const cardHeader = createElementWithClass("div", "card-header");
+    card.appendChild(cardHeader);
+
+    const bookTitle = createElementWithClass("p", "book-title");
+    bookTitle.textContent = book.title;
+    cardHeader.appendChild(bookTitle);
+
+    const cardBody = createElementWithClass("div", "card-body");
+    card.appendChild(cardBody);
+
+    const bookAuthor = createElementWithClass("p", "book-author");
+    bookAuthor.textContent = book.author;
+
+    const bookPages = createElementWithClass("p", "book-pages");
+    bookPages.textContent = book.pages;
+    cardBody.appendChild(bookAuthor);
+    cardBody.appendChild(bookPages);
+
+    const buttonGroup = createElementWithClass("div", "btn-group");
+    cardBody.appendChild(buttonGroup);
+
+    const removeButton = createElementWithClass("button", "btn btn-secondary");
+    removeButton.textContent = "Remove";
+    removeButton.id = "remove";
+    removeButton.addEventListener("click", () => removeBook(index, library));
+
+    const readButton = createElementWithClass("button", "btn");
+    if (book.read) {
+      readButton.className = "btn btn-primary";
+      readButton.textContent = "Read";
+    } else {
+      readButton.className = "btn btn-red";
+      readButton.textContent = "Unread";
+    }
+
+    readButton.id = "read";
+    readButton.addEventListener("click", () => {
+      book.read = !book.read;
+      updateLibrary(library);
     });
-    BOOK_GRID.appendChild(bookCard);
+
+    buttonGroup.appendChild(readButton);
+    buttonGroup.appendChild(removeButton);
   });
 }
 
 function resetGrid() {
-  BOOK_GRID.innerHTML = "";
+  bookGrid.innerHTML = "";
 }
 
 function addBook(book, library) {
@@ -74,19 +107,20 @@ function removeBook(index, library) {
   updateLibrary(library);
 }
 
-BOOK_FORM.addEventListener("submit", (event) => {
+bookForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const formData = new FormData(BOOK_FORM);
+  const formData = new FormData(bookForm);
   const title = formData.get("title");
   const author = formData.get("author");
   const pages = formData.get("pages");
-  const read = formData.get("read");
+  const read = formData.get("read") === "read";
 
   let book = new Book(title, author, pages, read);
 
   addBook(book, myLibrary);
-  BOOK_FORM.reset();
+  bookForm.reset();
+  modal.close();
 });
 
 updateLibrary(myLibrary);
