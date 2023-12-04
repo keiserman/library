@@ -61,7 +61,7 @@ function updateLibrary(library) {
     bookAuthor.textContent = book.author;
 
     const bookPages = createElementWithClass("p", "book-pages");
-    bookPages.textContent = book.pages;
+    bookPages.textContent = `${book.pages} pages`;
     cardBody.appendChild(bookAuthor);
     cardBody.appendChild(bookPages);
 
