@@ -33,7 +33,6 @@ dialog {
   border: none;
   padding: 1.5rem;
   background-color: white;
-  width: 50vw;
   max-width: 25rem;
   border-radius: 0.5rem;
   box-shadow: var(--shadow);

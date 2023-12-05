@@ -5,18 +5,8 @@ const openButton = document.querySelector("#openModal");
 const closeButton = document.querySelector("#closeModal");
 
 const myLibrary = [
-  {
-    title: "Harry Potter",
-    author: "J.K. Rowling",
-    pages: 234,
-    read: true,
-  },
-  {
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    pages: 320,
-    read: false,
-  },
+  new Book("Harry Potter", "J.K. Rowling", 234, true),
+  new Book("The Hobbit", "J.R.R. Tolkien", 320, false),
 ];
 
 function Book(title, author, pages, read) {
@@ -25,6 +15,10 @@ function Book(title, author, pages, read) {
   this.pages = pages;
   this.read = read;
 }
+
+Book.prototype.toggleRead = function () {
+  this.read = !this.read;
+};
 
 openButton.addEventListener("click", () => {
   modal.showModal();
@@ -81,10 +75,9 @@ function updateLibrary(library) {
       readButton.className = "btn btn-red";
       readButton.textContent = "Unread";
     }
-
     readButton.id = "read";
     readButton.addEventListener("click", () => {
-      book.read = !book.read;
+      book.toggleRead();
       updateLibrary(library);
     });
 
