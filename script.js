@@ -25,6 +25,7 @@ openButton.addEventListener("click", () => {
 });
 
 closeButton.addEventListener("click", () => {
+  bookForm.reset();
   modal.close();
 });
 
