@@ -2,4 +2,4 @@
 
 A simple library app
 
-[View demo] (https://keiserman.github.io/library/)
+[View demo](https://keiserman.github.io/library/)
