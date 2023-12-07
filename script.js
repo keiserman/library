@@ -3,11 +3,7 @@ const bookForm = document.querySelector("form");
 const modal = document.querySelector("dialog");
 const openButton = document.querySelector("#openModal");
 const closeButton = document.querySelector("#closeModal");
-
-const myLibrary = [
-  new Book("Harry Potter", "J.K. Rowling", 234, true),
-  new Book("The Hobbit", "J.R.R. Tolkien", 320, false),
-];
+const myLibrary = [];
 
 function Book(title, author, pages, read) {
   this.title = title;
@@ -20,14 +16,7 @@ Book.prototype.toggleRead = function () {
   this.read = !this.read;
 };
 
-openButton.addEventListener("click", () => {
-  modal.showModal();
-});
-
-closeButton.addEventListener("click", () => {
-  bookForm.reset();
-  modal.close();
-});
+// Functions
 
 function createElementWithClass(tag, className) {
   let element = document.createElement(tag);
@@ -36,39 +25,29 @@ function createElementWithClass(tag, className) {
 }
 
 function updateLibrary(library) {
-  resetGrid();
+  resetGrid(bookGrid);
   library.forEach((book, index) => {
-    const card = createElementWithClass("div", "card");
-    card.dataset.id = index;
-    bookGrid.appendChild(card);
-
+    const bookCard = createElementWithClass("div", "card");
     const cardHeader = createElementWithClass("div", "card-header");
-    card.appendChild(cardHeader);
-
     const bookTitle = createElementWithClass("p", "book-title");
-    bookTitle.textContent = book.title;
-    cardHeader.appendChild(bookTitle);
-
     const cardBody = createElementWithClass("div", "card-body");
-    card.appendChild(cardBody);
-
     const bookAuthor = createElementWithClass("p", "book-author");
-    bookAuthor.textContent = book.author;
-
     const bookPages = createElementWithClass("p", "book-pages");
-    bookPages.textContent = `${book.pages} pages`;
-    cardBody.appendChild(bookAuthor);
-    cardBody.appendChild(bookPages);
-
     const buttonGroup = createElementWithClass("div", "btn-group");
-    cardBody.appendChild(buttonGroup);
-
-    const removeButton = createElementWithClass("button", "btn btn-secondary");
-    removeButton.textContent = "Remove";
-    removeButton.id = "remove";
-    removeButton.addEventListener("click", () => removeBook(index, library));
-
     const readButton = createElementWithClass("button", "btn");
+    const removeButton = createElementWithClass("button", "btn btn-secondary");
+
+    bookCard.dataset.id = index;
+    bookTitle.textContent = book.title;
+    bookAuthor.textContent = book.author;
+    bookPages.textContent = `${book.pages} pages`;
+
+    readButton.id = "read";
+    readButton.addEventListener("click", () => {
+      book.toggleRead();
+      updateLibrary(library);
+    });
+
     if (book.read) {
       readButton.className = "btn btn-primary";
       readButton.textContent = "Read";
@@ -76,19 +55,27 @@ function updateLibrary(library) {
       readButton.className = "btn btn-red";
       readButton.textContent = "Unread";
     }
-    readButton.id = "read";
-    readButton.addEventListener("click", () => {
-      book.toggleRead();
-      updateLibrary(library);
-    });
 
+    removeButton.textContent = "Remove";
+    removeButton.id = "remove";
+    removeButton.addEventListener("click", () => removeBook(index, library));
+
+    bookGrid.appendChild(bookCard);
+    bookCard.appendChild(cardHeader);
+    cardHeader.appendChild(bookTitle);
+    bookCard.appendChild(cardBody);
+    cardBody.appendChild(bookAuthor);
+    cardBody.appendChild(bookPages);
+    cardBody.appendChild(buttonGroup);
     buttonGroup.appendChild(readButton);
     buttonGroup.appendChild(removeButton);
   });
 }
 
-function resetGrid() {
-  bookGrid.innerHTML = "";
+function resetGrid(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
 }
 
 function addBook(book, library) {
@@ -100,6 +87,17 @@ function removeBook(index, library) {
   library.splice(index, 1);
   updateLibrary(library);
 }
+
+// Event Listeners
+
+openButton.addEventListener("click", () => {
+  modal.showModal();
+});
+
+closeButton.addEventListener("click", () => {
+  bookForm.reset();
+  modal.close();
+});
 
 bookForm.addEventListener("submit", (event) => {
   event.preventDefault();
